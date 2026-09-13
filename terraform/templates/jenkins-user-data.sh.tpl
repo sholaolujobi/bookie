@@ -22,14 +22,12 @@ usermod -aG docker ec2-user
 dnf install -y java-17-amazon-corretto-headless
 
 # --- Jenkins ------------------------------------------------------------------
-cat >/etc/yum.repos.d/jenkins.repo <<'EOF'
-[jenkins]
-name=Jenkins-stable
-baseurl=https://pkg.jenkins.io/redhat-stable
-gpgcheck=1
-gpgkey=https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
-EOF
-rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+# Fetch the live repo definition (rather than hardcoding a gpgkey URL/repo
+# path) so this keeps working across Jenkins' periodic signing-key/repo
+# rotations.
+curl -fsSL https://pkg.jenkins.io/redhat-stable/jenkins.repo -o /etc/yum.repos.d/jenkins.repo
+jenkins_gpg_key=$(grep '^gpgkey=' /etc/yum.repos.d/jenkins.repo | head -1 | cut -d= -f2-)
+rpm --import "$jenkins_gpg_key"
 dnf install -y jenkins
 
 # Let Jenkins run docker builds without needing a service restart later.

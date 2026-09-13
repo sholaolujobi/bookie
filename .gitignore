@@ -11,6 +11,7 @@ terraform/.terraform.lock.hcl.bak
 **/terraform.tfstate
 **/terraform.tfstate.*
 **/*.tfplan
+terraform/tfplan*
 **/crash.log
 **/crash.*.log
 terraform/terraform.tfvars
