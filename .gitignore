@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Build output
+/frontend/build/
+/backend/dist/
+
+# Terraform
+terraform/.terraform/
+terraform/.terraform.lock.hcl.bak
+**/terraform.tfstate
+**/terraform.tfstate.*
+**/*.tfplan
+**/crash.log
+**/crash.*.log
+terraform/terraform.tfvars
+!terraform/terraform.tfvars.example
+
+# Secrets / credentials
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*credentials*
+
+# Jenkins local state (if run locally)
+jenkins_home/
+
+# OS / editor
+.DS_Store
+*.log
+npm-debug.log*
+.vscode/
+.idea/
+
+# Test coverage
+coverage/
