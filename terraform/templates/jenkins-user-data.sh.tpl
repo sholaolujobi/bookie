@@ -20,6 +20,16 @@ dnf update -y
 
 echo "export AWS_DEFAULT_REGION=${aws_region}" >/etc/profile.d/aws-region.sh
 
+# --- SSM Agent ----------------------------------------------------------------
+# Ships pre-installed on AL2023 but is not reliably enabled/started by
+# default on every AMI build - enable it explicitly so this instance is
+# reachable via SSM Session Manager (never SSH, which stays closed by
+# default - see terraform/security-groups.tf).
+if ! systemctl enable --now amazon-ssm-agent; then
+  dnf install -y amazon-ssm-agent
+  systemctl enable --now amazon-ssm-agent
+fi
+
 # --- Docker -----------------------------------------------------------------
 dnf install -y docker
 systemctl enable --now docker

@@ -23,11 +23,21 @@ build, showing all stages passed ]`
 
 ## 4. Public frontend URL
 
-`http://<ALB_DNS_NAME>` — from `terraform output application_url`
+<http://bookie-dev-alb-889895501.us-east-1.elb.amazonaws.com>
+
+(Also available via `terraform output application_url` — the ALB DNS name
+is stable for the life of this deployment; it will change if the ALB is
+ever recreated.)
 
 ## 5. Jenkins server URL
 
-`http://<JENKINS_PUBLIC_IP>:8080` — from `terraform output jenkins_url`
+`http://<JENKINS_PUBLIC_IP>:8080` — from `terraform output jenkins_url`.
+Not filled in as a fixed value here: the Jenkins EC2 instance's public IP
+is not an Elastic IP, so it changes if the instance is ever replaced (this
+happened a few times during initial setup while debugging the boot
+script — see `PROJECT_STATUS.md`). Always get the current value from
+`terraform output jenkins_url` rather than relying on a value written down
+here.
 
 ## 6. Temporary Jenkins username and password
 
