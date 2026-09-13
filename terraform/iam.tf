@@ -123,6 +123,16 @@ data "aws_iam_policy_document" "jenkins_pipeline" {
     resources = ["*"]
   }
 
+  # The Jenkinsfile looks up the ALB's DNS name dynamically at build time
+  # (never hardcoded) so it can run the post-deploy smoke test against the
+  # real deployed URL. elasticloadbalancing:Describe* actions do not
+  # support resource-level permissions.
+  statement {
+    sid       = "AlbDescribe"
+    actions   = ["elasticloadbalancing:DescribeLoadBalancers"]
+    resources = ["*"]
+  }
+
   # Describe/update actions scoped to this project's cluster and services.
   statement {
     sid = "EcsServiceOperations"

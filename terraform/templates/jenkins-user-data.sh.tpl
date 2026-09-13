@@ -20,6 +20,14 @@ dnf update -y
 
 echo "export AWS_DEFAULT_REGION=${aws_region}" >/etc/profile.d/aws-region.sh
 
+# /tmp defaults to a tmpfs sized ~half of RAM (~955MB on this instance
+# size), which is below Jenkins' built-in disk-space monitor's default
+# 1 GiB free-space threshold - Jenkins marks its own built-in node offline
+# ("Disk space is below threshold") and refuses to schedule any build.
+# Raising the tmpfs size cap doesn't consume RAM until something actually
+# writes that much data, so this is a safe fix, not an actual RAM trade.
+mount -o remount,size=2G /tmp
+
 # --- SSM Agent ----------------------------------------------------------------
 # Ships pre-installed on AL2023 but is not reliably enabled/started by
 # default on every AMI build - enable it explicitly so this instance is
