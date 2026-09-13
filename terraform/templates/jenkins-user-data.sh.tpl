@@ -26,7 +26,10 @@ systemctl enable --now docker
 usermod -aG docker ec2-user
 
 # --- Java (required by Jenkins) ---------------------------------------------
-dnf install -y java-17-amazon-corretto-headless
+# Current Jenkins core requires Java 21+ (Java 17 is no longer sufficient
+# as of recent Jenkins releases - a java-17 install here previously caused
+# `systemctl start jenkins` to fail with a non-zero control-process exit).
+dnf install -y java-21-amazon-corretto-headless
 
 # --- Jenkins ------------------------------------------------------------------
 # Fetch the live repo definition (rather than hardcoding a gpgkey URL/repo
@@ -41,8 +44,20 @@ dnf install -y jenkins
 usermod -aG docker jenkins
 
 # Start Jenkins as early as possible so it's usable even if a later,
-# non-essential tool install below fails.
-systemctl enable --now jenkins
+# non-essential tool install below fails. Don't let a start failure abort
+# the whole script (set -e is temporarily relaxed) - log diagnostics either
+# way so a failure is debuggable from /var/log/user-data.log via SSM
+# instead of only through EC2 console output.
+systemctl enable jenkins
+set +e
+systemctl start jenkins
+jenkins_start_rc=$?
+set -e
+systemctl status jenkins --no-pager || true
+journalctl -xeu jenkins --no-pager -n 200 || true
+if [ "$jenkins_start_rc" -ne 0 ]; then
+  echo "WARNING: jenkins.service failed to start (see journalctl output above). Continuing with the rest of the bootstrap." >&2
+fi
 
 # --- Supporting CLI tools -----------------------------------------------------
 dnf install -y git jq unzip tar gzip
