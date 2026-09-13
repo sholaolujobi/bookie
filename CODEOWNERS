@@ -1,0 +1,6 @@
+# Default owner for everything in the repo.
+* @sholaolujobi
+
+# Infrastructure changes should always be reviewed carefully.
+/terraform/ @sholaolujobi
+/Jenkinsfile @sholaolujobi

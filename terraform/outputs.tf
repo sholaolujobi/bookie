@@ -73,6 +73,16 @@ output "public_subnet_ids" {
   value       = aws_subnet.public[*].id
 }
 
+output "frontend_target_group_arn" {
+  description = "ALB target group ARN for the frontend service."
+  value       = aws_lb_target_group.frontend.arn
+}
+
+output "backend_target_group_arn" {
+  description = "ALB target group ARN for the backend service."
+  value       = aws_lb_target_group.backend.arn
+}
+
 output "jenkins_iam_role_arn" {
   description = "IAM role ARN assumed by the Jenkins EC2 instance."
   value       = aws_iam_role.jenkins.arn
