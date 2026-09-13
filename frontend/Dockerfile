@@ -16,7 +16,7 @@ RUN npm run build
 # ---- Runtime stage -------------------------------------------------------
 # Unprivileged nginx image: runs as non-root (uid 101) and listens on a
 # non-privileged port by default.
-FROM nginxinc/nginx-unprivileged:1.27-alpine
+FROM nginxinc/nginx-unprivileged:1.31-alpine
 
 # Pull latest patched OS packages (e.g. openssl) before dropping to the
 # unprivileged nginx user. Named users (root/nginx) are used deliberately
