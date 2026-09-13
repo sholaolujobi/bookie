@@ -1,0 +1,37 @@
+# Copy this file to terraform.tfvars and adjust as needed.
+# terraform.tfvars itself is git-ignored and must never be committed.
+
+aws_region   = "us-east-1"
+project_name = "bookie"
+environment  = "dev"
+
+vpc_cidr             = "10.0.0.0/16"
+public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
+
+container_port          = 8080
+frontend_cpu             = 256
+frontend_memory          = 512
+backend_cpu              = 256
+backend_memory           = 512
+frontend_desired_count  = 1
+backend_desired_count   = 1
+
+log_retention_days   = 14
+ecr_max_image_count  = 15
+
+jenkins_instance_type     = "t3.small"
+jenkins_root_volume_size  = 20
+
+# Restrict this to your own IP (e.g. ["203.0.113.4/32"]) once you know it -
+# left open by default only because the challenge requires the Jenkins UI
+# to be reachable by a grader.
+jenkins_allowed_cidrs = ["0.0.0.0/0"]
+
+enable_jenkins_ssh       = false
+jenkins_ssh_allowed_cidr = "0.0.0.0/32"
+
+# Set to an existing EC2 key pair name only if you need SSH as a fallback to
+# SSM Session Manager. Leave null otherwise.
+key_pair_name = null
+
+github_repo_url = "https://github.com/sholaolujobi/bookie.git"
