@@ -5,6 +5,13 @@
 # password on first boot at /var/lib/jenkins/secrets/initialAdminPassword,
 # retrieved later via SSM Session Manager (see docs/JENKINS_SETUP.md) - it
 # is never written here, logged, or embedded in any Terraform output.
+#
+# Ordering note: Docker/Java/Jenkins are installed and started FIRST, before
+# the supporting CLI tools (AWS CLI, Terraform, Trivy, hadolint, gitleaks).
+# That way, if one of those secondary installs breaks (a moved download URL,
+# a missing base package, an upstream repo change), Jenkins itself is still
+# reachable and the specific broken step can be fixed and re-run instead of
+# blocking the whole instance.
 set -euxo pipefail
 
 exec > >(tee /var/log/user-data.log) 2>&1
@@ -33,8 +40,12 @@ dnf install -y jenkins
 # Let Jenkins run docker builds without needing a service restart later.
 usermod -aG docker jenkins
 
-# --- Git, jq ------------------------------------------------------------------
-dnf install -y git jq
+# Start Jenkins as early as possible so it's usable even if a later,
+# non-essential tool install below fails.
+systemctl enable --now jenkins
+
+# --- Supporting CLI tools -----------------------------------------------------
+dnf install -y git jq unzip tar gzip
 
 # --- AWS CLI v2 -----------------------------------------------------------
 curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscliv2.zip
@@ -66,8 +77,5 @@ curl -fsSL "https://github.com/gitleaks/gitleaks/releases/download/v8.18.4/gitle
 tar -xzf /tmp/gitleaks.tar.gz -C /usr/local/bin gitleaks
 chmod +x /usr/local/bin/gitleaks
 rm -f /tmp/gitleaks.tar.gz
-
-# --- Start Jenkins ------------------------------------------------------------
-systemctl enable --now jenkins
 
 echo "Jenkins bootstrap complete." >> /var/log/user-data.log
