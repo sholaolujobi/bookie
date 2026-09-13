@@ -9,13 +9,16 @@ outside git** — never commit real credentials, even temporary ones.
 
 ## 1. Screenshot: deployed frontend showing SUCCESS + GUID
 
-`[ attach screenshot here — browser window open to the ALB URL, showing
-the "SUCCESS" label and GUID rendered by the React app ]`
+Captured 2026-09-13 via headless Chrome at
+<http://bookie-dev-alb-889895501.us-east-1.elb.amazonaws.com> immediately
+after Jenkins build #3 deployed — shows "SUCCESS" and a GUID rendered by
+the React app. `[ attach the sent PNG here for the final document ]`
 
 ## 2. Screenshot: successful Jenkins pipeline
 
-`[ attach screenshot here — Jenkins Stage View for a green bookie-deploy
-build, showing all stages passed ]`
+Captured 2026-09-13, authenticated as `grader` — `bookie-deploy #3`,
+green checkmark, "Started by user grader", 5m54s, commit `9a757fb`.
+`[ attach the sent PNG here for the final document ]`
 
 ## 3. GitHub repository URL
 
